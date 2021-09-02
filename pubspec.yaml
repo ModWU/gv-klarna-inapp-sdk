@@ -1,10 +1,11 @@
 name: gv_klarna_inapp_sdk
 description: Klarna&#x27;s Flutter wrapper for the In-App SDK
 version: 0.0.1
-homepage: https://github.com/klarna/flutter-klarna-inapp-sdk
+homepage: https://github.com/ModWU/gv-klarna-inapp-sdk
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=1.12.0"
 
 dependencies:
   flutter:
@@ -17,6 +18,8 @@ dev_dependencies:
 
 flutter:
   plugin:
-    androidPackage: com.klarna.inapp.sdk.gv_klarna_inapp_sdk
-    pluginClass: GVKlarnaInappSdk
+    platforms:
+      android:
+        package: com.klarna.inapp.sdk.gv_klarna_inapp_sdk
+        pluginClass: GVKlarnaInappSdk
 

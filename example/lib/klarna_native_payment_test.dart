@@ -47,6 +47,7 @@ class _NativePaymentTestWidgetState extends State<_NativePaymentTestWidget> {
 
   @override
   void dispose() {
+    _androidViewController.dispose();
     super.dispose();
   }
 

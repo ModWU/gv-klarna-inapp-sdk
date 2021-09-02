@@ -149,8 +149,9 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
     }
 
     override fun getView(): View {
-        Log.d("kotlinDebugLog", "getView isInitialized: $isInitialized, notInitializedView: $notInitializedView")
-        return if (isInitialized) paymentView else notInitializedView
+        Log.d("kotlinDebugLog", "getView => isInitialized: $isInitialized")
+        //return if (isInitialized) paymentView else notInitializedView
+        return paymentView
     }
 
     override fun dispose() {
