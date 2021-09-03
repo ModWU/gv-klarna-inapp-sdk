@@ -12,7 +12,7 @@ class KlarnaNativeSDK {
   static const MethodChannel _channel =
   const MethodChannel('klarna_native_sdk');
 
-  static Future<String> authorizingSession(String returnUrl) async {
+  static Future<String> authorizingSession() async {
     return await _channel
         .invokeMethod('authorizingSession');
   }
