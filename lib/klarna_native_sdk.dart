@@ -12,9 +12,9 @@ class KlarnaNativeSDK {
   static const MethodChannel _channel =
   const MethodChannel('klarna_native_sdk');
 
-  static Future<Null> initialize(String returnUrl) async {
+  static Future<String> authorizingSession(String returnUrl) async {
     return await _channel
-        .invokeMethod('initialize', <String, dynamic>{'returnUrl': returnUrl});
+        .invokeMethod('authorizingSession');
   }
 
   static void setListener(CallbackListener listener) async {
@@ -22,10 +22,6 @@ class KlarnaNativeSDK {
       switch (call.method) {
         case 'onInitialized':
           listener(CallbackType.onInitialized, call.arguments);
-          /*print('MethodCall onInitialized => $call, call.arguments type => ${call.arguments?.runtimeType}');
-          final bool isSuccess = call.arguments['isSuccess'];
-          final String message = call.arguments['message'];
-          print('isSuccess: $isSuccess, message: $message');*/
           break;
       }
     });

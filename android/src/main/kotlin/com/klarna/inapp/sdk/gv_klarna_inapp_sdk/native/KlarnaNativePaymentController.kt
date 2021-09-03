@@ -19,7 +19,7 @@ import io.flutter.plugin.platform.PlatformView
 class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger, viewId: Int, args: Any?) :
         PlatformView,  MethodChannel.MethodCallHandler, KlarnaPaymentViewCallback {
 
-    private val paymentView: KlarnaPaymentView = KlarnaPaymentView(context = context, category = KlarnaPaymentCategory.PAY_LATER, callback = this)
+    private val paymentView: KlarnaPaymentView = KlarnaPaymentView(context = context, category = KlarnaPaymentCategory.SLICE_IT, callback = this)
     private var notInitializedView: TextView = TextView(context);
     private var methodChannel: MethodChannel = MethodChannel(messenger, "klarna_native_sdk")
 
@@ -28,14 +28,14 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
     private var loadArgs: String? = null;
     private var methodResult: MethodChannel.Result? = null;
 
-    private var isInitialized: Boolean = false;
+    private var isInitialized: Boolean = false
 
     private val context: Context = context;
 
     init {
         //通信
         methodChannel.setMethodCallHandler(this)
-        Log.d("kotlinDebugLog", "KlarnaNativePaymentController init => args: $args, viewId: $viewId")
+        Log.d("kotlinDebugLog", "KlarnaNativePaymentController init1 => args: $args, viewId: $viewId")
 
         var layoutParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         notInitializedView.setGravity(Gravity.CENTER);
@@ -53,7 +53,7 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
                 Log.d("kotlinDebugLog", "KlarnaNativePaymentController init => clientToken: $clientToken, returnURL: $returnURL")
                 this.clientToken = clientToken
                 this.returnURL = returnURL
-                loadArgs = args["loadArgs"] as String?;
+                loadArgs = args["loadArgs"] as String?
                 paymentView.initialize(clientToken = clientToken, returnURL = returnURL)
             }
         } else {
@@ -150,7 +150,6 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
 
     override fun getView(): View {
         Log.d("kotlinDebugLog", "getView => isInitialized: $isInitialized")
-        //return if (isInitialized) paymentView else notInitializedView
         return paymentView
     }
 
@@ -236,7 +235,7 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
 
     override fun onLoaded(view: KlarnaPaymentView) {
         Log.d("kotlinDebugLog", "onLoaded")
-        isInitialized = true;
+        isInitialized = true
         methodChannel.invokeMethod("onInitialized", mapOf(
                 "isSuccess" to true,
                 "message" to "Initialization succeeded."
