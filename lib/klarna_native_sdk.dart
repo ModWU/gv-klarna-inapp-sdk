@@ -6,7 +6,7 @@ enum CallbackType {
   onInitialized,
 }
 
-typedef CallbackListener = void Function(CallbackType type, dynamic arguments);
+typedef KlarnaNativeCallback = void Function(CallbackType type, dynamic arguments);
 
 class KlarnaNativeSDK {
   static const MethodChannel _channel =
@@ -36,11 +36,11 @@ class KlarnaNativeSDK {
         .invokeMethod('loadPaymentReview');
   }
 
-  static void setListener(CallbackListener listener) async {
+  static void setListener(KlarnaNativeCallback callback) async {
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
         case 'onInitialized':
-          listener(CallbackType.onInitialized, call.arguments);
+          callback(CallbackType.onInitialized, call.arguments);
           break;
       }
     });
