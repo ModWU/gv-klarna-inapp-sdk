@@ -36,7 +36,13 @@ class KlarnaNativeSDK {
         .invokeMethod('loadPaymentReview');
   }
 
-  static void setListener(KlarnaNativeCallback callback) async {
+  /// return [available]
+  static Future<bool> isAvailable() async {
+    return await _channel
+        .invokeMethod('isAvailable');
+  }
+
+  static void setListener(KlarnaNativeCallback callback) {
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
         case 'onInitialized':

@@ -124,6 +124,11 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
         paymentView.loadPaymentReview()
     }
 
+    private fun isAvailable(call: MethodCall, result: MethodChannel.Result) {
+        methodResult = result
+        result.success(paymentView.isAvailable())
+    }
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         if (!isInitialized) {
             notInitialized(result)
@@ -131,16 +136,19 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
         }
         when (call.method) {
             "authorizingSession" -> {
-                authorizingSession(call, result);
+                authorizingSession(call, result)
             }
             "reauthorize" -> {
-                reauthorize(call, result);
+                reauthorize(call, result)
             }
             "finalize" -> {
-                finalize(call, result);
+                finalize(call, result)
             }
             "loadPaymentReview" -> {
-                loadPaymentReview(call, result);
+                loadPaymentReview(call, result)
+            }
+            "isAvailable" -> {
+                isAvailable(call, result)
             }
             else -> {
                 result.notImplemented()
