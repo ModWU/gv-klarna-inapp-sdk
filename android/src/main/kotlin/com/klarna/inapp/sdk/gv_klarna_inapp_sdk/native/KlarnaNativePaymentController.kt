@@ -37,7 +37,7 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
         methodChannel.setMethodCallHandler(this)
         Log.d("kotlinDebugLog", "KlarnaNativePaymentController init1 => args: $args, viewId: $viewId")
 
-        var layoutParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        val layoutParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         notInitializedView.setGravity(Gravity.CENTER);
         notInitializedView.setLayoutParams(layoutParams);
         notInitializedView.setTextColor(context.getResources().getColor(android.R.color.black));
