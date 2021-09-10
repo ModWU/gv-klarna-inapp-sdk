@@ -10,35 +10,38 @@ typedef KlarnaNativeCallback = void Function(
     CallbackType type, dynamic arguments);
 
 class KlarnaNativeSDK {
-  static const MethodChannel _channel = MethodChannel('klarna_native_sdk');
+  KlarnaNativeSDK(int viewId)
+      : channel = MethodChannel('klarna_native_sdk_$viewId');
+
+  final MethodChannel channel;
 
   /// return [authToken]
-  static Future<String> authorizingSession() async {
-    return await _channel.invokeMethod('authorizingSession');
+  Future<String> authorizingSession() async {
+    return await channel.invokeMethod('authorizingSession');
   }
 
   /// return [authToken]
-  static Future<String> reauthorize() async {
-    return await _channel.invokeMethod('reauthorize');
+  Future<String> reauthorize() async {
+    return await channel.invokeMethod('reauthorize');
   }
 
   /// return [authToken]
-  static Future<String> finalize() async {
-    return await _channel.invokeMethod('finalize');
+  Future<String> finalize() async {
+    return await channel.invokeMethod('finalize');
   }
 
   /// return [showForm]
-  static Future<bool> loadPaymentReview() async {
-    return await _channel.invokeMethod('loadPaymentReview');
+  Future<bool> loadPaymentReview() async {
+    return await channel.invokeMethod('loadPaymentReview');
   }
 
   /// return [available]
-  static Future<bool> isAvailable() async {
-    return await _channel.invokeMethod('isAvailable');
+  Future<bool> isAvailable() async {
+    return await channel.invokeMethod('isAvailable');
   }
 
-  static void setListener(KlarnaNativeCallback callback) {
-    _channel.setMethodCallHandler((MethodCall call) async {
+  void setListener(KlarnaNativeCallback callback) {
+    channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
         case 'onInitialized':
           callback(CallbackType.onInitialized, call.arguments);

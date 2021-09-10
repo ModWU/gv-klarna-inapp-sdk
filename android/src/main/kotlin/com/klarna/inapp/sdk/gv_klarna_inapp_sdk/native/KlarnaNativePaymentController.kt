@@ -21,7 +21,7 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
 
     private val paymentView: KlarnaPaymentView = KlarnaPaymentView(context = context, category = KlarnaPaymentCategory.SLICE_IT, callback = this)
     private var notInitializedView: TextView = TextView(context);
-    private var methodChannel: MethodChannel = MethodChannel(messenger, "klarna_native_sdk")
+    private var methodChannel: MethodChannel = MethodChannel(messenger, "klarna_native_sdk_$viewId")
 
     private lateinit var clientToken: String;
     private lateinit var returnURL: String;

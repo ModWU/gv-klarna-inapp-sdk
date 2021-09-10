@@ -19,7 +19,9 @@ class _NativePaymentTestWidget extends StatefulWidget {
 class _NativePaymentTestWidgetState extends State<_NativePaymentTestWidget> {
   static const StandardMessageCodec _codec = StandardMessageCodec();
 
-  late AndroidViewController _androidViewController;
+  late final AndroidViewController _androidViewController;
+
+  late final KlarnaNativeSDK klarnaNativeSDK = KlarnaNativeSDK(hashCode);
 
   @override
   void initState() {
@@ -36,7 +38,7 @@ class _NativePaymentTestWidgetState extends State<_NativePaymentTestWidget> {
     );
     _androidViewController.create();
 
-    KlarnaNativeSDK.setListener((CallbackType type, dynamic arguments) {
+    klarnaNativeSDK.setListener((CallbackType type, dynamic arguments) {
       if (type == CallbackType.onInitialized) {
         final bool isSuccess = arguments['isSuccess'];
         final String message = arguments['message'];
