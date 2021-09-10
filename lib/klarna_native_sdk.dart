@@ -10,10 +10,11 @@ typedef KlarnaNativeCallback = void Function(
     CallbackType type, dynamic arguments);
 
 class KlarnaNativeSDK {
-  KlarnaNativeSDK(int viewId)
-      : channel = MethodChannel('klarna_native_sdk_$viewId');
+  KlarnaNativeSDK(this.viewId);
 
-  final MethodChannel channel;
+  final int viewId;
+
+  late final MethodChannel channel = MethodChannel('klarna_native_sdk_$viewId');
 
   /// return [authToken]
   Future<String> authorizingSession() async {
