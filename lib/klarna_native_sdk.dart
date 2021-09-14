@@ -14,6 +14,8 @@ class KlarnaNativeSDK {
 
   final int viewId;
 
+  static const String viewType = "klarna_native_payment_view";
+
   late final MethodChannel channel = MethodChannel('klarna_native_sdk_$viewId');
 
   /// return [authToken]
