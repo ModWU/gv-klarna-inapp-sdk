@@ -19,18 +19,17 @@ import io.flutter.plugin.platform.PlatformView
 class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger, viewId: Int, args: Any?) :
         PlatformView,  MethodChannel.MethodCallHandler, KlarnaPaymentViewCallback {
 
-    private val paymentView: KlarnaPaymentView = KlarnaPaymentView(context = context, category = KlarnaPaymentCategory.SLICE_IT, callback = this)
+    private var paymentView: KlarnaPaymentView? = null
     private var notInitializedView: TextView = TextView(context);
     private var methodChannel: MethodChannel = MethodChannel(messenger, "klarna_native_sdk_$viewId")
 
-    private lateinit var clientToken: String;
-    private lateinit var returnURL: String;
-    private var loadArgs: String? = null;
-    private var methodResult: MethodChannel.Result? = null;
+    private lateinit var clientToken: String
+    private lateinit var returnURL: String
+    private lateinit var paymentMethodCategory: String
+    private var loadArgs: String? = null
+    private var methodResult: MethodChannel.Result? = null
 
     private var isInitialized: Boolean = false
-
-    private val context: Context = context;
 
     init {
         //通信
@@ -44,17 +43,20 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
         notInitializedView.setText("Initialization exception")
 
         if (args is Map<*, *>) {
-            val clientToken: String? = args["clientToken"] as String?;
-            val returnURL: String? = args["returnURL"] as String?;
+            val clientToken: String? = args["clientToken"] as String?
+            val returnURL: String? = args["returnURL"] as String?
+            val paymentMethodCategory: String? = args["paymentMethodCategory"] as String?
 
-            if (clientToken == null || returnURL == null) {
-                markNotInitialize("Initialization failed. Neither the 'clientToken'(=$clientToken) nor 'returnURL'(=$returnURL) parameters can be null.");
+            if (clientToken == null || returnURL == null || paymentMethodCategory == null) {
+                markNotInitialize("Initialization failed. Neither the 'clientToken'(=$clientToken) nor 'returnURL'(=$returnURL) nor 'paymentMethodCategory'(=$paymentMethodCategory) parameters can be null.");
             } else {
-                Log.d("kotlinDebugLog", "KlarnaNativePaymentController init => clientToken: $clientToken, returnURL: $returnURL")
+                Log.d("kotlinDebugLog", "KlarnaNativePaymentController init => clientToken: $clientToken, returnURL: $returnURL, paymentMethodCategory: $paymentMethodCategory")
                 this.clientToken = clientToken
                 this.returnURL = returnURL
+                this.paymentMethodCategory = paymentMethodCategory
                 loadArgs = args["loadArgs"] as String?
-                paymentView.initialize(clientToken = clientToken, returnURL = returnURL)
+                paymentView = KlarnaPaymentView(context = context, category = paymentMethodCategory, callback = this)
+                paymentView?.initialize(clientToken = clientToken, returnURL = returnURL)
             }
         } else {
             markNotInitialize("Initialization failed. Parameter type must be Map.");
@@ -89,7 +91,7 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
     // be turned off; if it is, the user may need to be prompted a second time to input data.
     private fun authorizingSession(call: MethodCall, result: MethodChannel.Result) {
         methodResult = result
-        paymentView.authorize(true, /*call.argument<String>("sessionData")*/null)
+        paymentView?.authorize(true, /*call.argument<String>("sessionData")*/null)
     }
 
     // There are cases when you might want to allow your customer to change their order after it has
@@ -97,13 +99,13 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
     // customer details have changed, you’ll need to reauthorize the session.
     private fun reauthorize(call: MethodCall, result: MethodChannel.Result) {
         methodResult = result
-        paymentView.reauthorize(null)
+        paymentView?.reauthorize(null)
     }
 
     // If the session needs to be finalized, you’ll need to perform this last step to get an authorization token.
     private fun finalize(call: MethodCall, result: MethodChannel.Result) {
         methodResult = result
-        paymentView.finalize(null)
+        paymentView?.finalize(null)
     }
 
     // If you’d like to allow the user to review their payment after it’s authorized, this can be done in two ways:
@@ -121,12 +123,12 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
     // Only specific payment method categories and countries are currently supported. Contact us to make sure that you can call this method.
     private fun loadPaymentReview(call: MethodCall, result: MethodChannel.Result) {
         methodResult = result
-        paymentView.loadPaymentReview()
+        paymentView?.loadPaymentReview()
     }
 
     private fun isAvailable(call: MethodCall, result: MethodChannel.Result) {
         methodResult = result
-        result.success(paymentView.isAvailable())
+        result.success(paymentView?.isAvailable())
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -158,7 +160,7 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
 
     override fun getView(): View {
         Log.d("kotlinDebugLog", "getView => isInitialized: $isInitialized")
-        return paymentView
+        return if (paymentView != null) paymentView as KlarnaPaymentView else notInitializedView
     }
 
     override fun dispose() {
@@ -224,7 +226,7 @@ class KlarnaNativePaymentController(context: Context, messenger: BinaryMessenger
 
     override fun onInitialized(view: KlarnaPaymentView) {
         Log.d("kotlinDebugLog", "onInitialized, loadArgs: $loadArgs")
-        view.load(loadArgs);
+        view.load(loadArgs)
     }
 
     override fun onLoadPaymentReview(view: KlarnaPaymentView, showForm: Boolean) {
